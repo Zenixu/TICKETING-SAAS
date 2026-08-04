@@ -2,17 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrganizerRequestController;
 use App\Http\Controllers\EventCatalogController;
-use App\Http\Controllers\SocialiteController;
 
 // 1. PUBLIC ROUTES (Landing & Katalog Event untuk User Biasa)
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/catalog', [EventCatalogController::class, 'index'])->name('events.catalog');
+Route::get('/', [EventCatalogController::class, 'index'])->name('welcome');
 Route::get('/catalog/{event}', [EventCatalogController::class, 'show'])->name('events.public-show');
 
 // 2. GUEST ROUTES (Login & Register)

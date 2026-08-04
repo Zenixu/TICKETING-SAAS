@@ -52,7 +52,8 @@ class AuthController extends Controller
             RateLimiter::clear($throttleKey);
             $request->session()->regenerate(); // Regenerate Session ID (Mencegah Session Fixation)
 
-            return redirect()->intended('/dashboard');
+            // Arahkan ke landing page dulu (role-aware) — bukan langsung dashboard
+            return redirect()->intended('/');
         }
 
         RateLimiter::hit($throttleKey, 60);
@@ -85,7 +86,8 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect('/dashboard');
+        // Setelah daftar, user mendarat di landing page dulu
+        return redirect('/');
     }
 
     /**

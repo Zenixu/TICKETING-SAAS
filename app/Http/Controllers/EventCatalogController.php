@@ -8,16 +8,25 @@ use Illuminate\Http\Request;
 class EventCatalogController extends Controller
 {
     /**
-     * Tampilkan Halaman Katalog Event untuk User Biasa (Publik).
+     * Tampilkan Halaman Landing / Eksplorasi Event Ala Loket.com.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $events = Event::with('user')->latest()->get();
-        return view('events.index', compact('events'));
+        $category = $request->query('category');
+        
+        $query = Event::with('user')->where('status', 'active');
+
+        if ($category) {
+            $query->where('material_links->category', $category);
+        }
+
+        $events = $query->latest()->get();
+
+        return view('welcome', compact('events', 'category'));
     }
 
     /**
-     * Tampilkan Detail Event & Halaman Beli Tiket.
+     * Tampilkan Halaman Detail Event & Pilihan Kategori Tiket (VIP/Regular).
      */
     public function show(Event $event)
     {

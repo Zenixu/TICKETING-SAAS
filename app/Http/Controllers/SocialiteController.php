@@ -38,7 +38,8 @@ class SocialiteController extends Controller
             Auth::login($user);
             session()->regenerate();
 
-            return redirect()->intended('/dashboard');
+            // Setelah login Google, mendarat di landing page dulu (role-aware)
+            return redirect()->intended('/');
 
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors([
