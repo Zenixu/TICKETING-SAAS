@@ -16,7 +16,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"Inter"', 'sans-serif'],
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', '"Inter"', 'sans-serif'],
                         display: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"Inter"', 'sans-serif'],
                         mono: ['"JetBrains Mono"', 'monospace'],
                     },
@@ -40,9 +40,9 @@
             letter-spacing: -0.015em;
             -webkit-font-smoothing: antialiased;
         }
-        h1, h2, h3, h4, .font-display {
+        h1, h2, h3, h4, .font-display, button, .btn {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.02em;
         }
     </style>
 </head>
@@ -55,7 +55,7 @@
             <span class="font-extrabold tracking-tight text-xl font-display text-white">LoketKita<span class="text-brand">.com</span></span>
         </a>
 
-        <a href="/" class="text-xs font-mono text-textMuted hover:text-white transition-colors">
+        <a href="/" class="text-xs font-display font-semibold text-textMuted hover:text-white transition-colors">
             ← Kembali ke Katalog
         </a>
     </header>
@@ -71,14 +71,14 @@
         <div class="relative rounded-3xl overflow-hidden h-[320px] md:h-[420px] border border-slateBorder">
             <img src="{{ $banner }}" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-canvas via-canvas/40 to-transparent flex flex-col justify-end p-8 md:p-12 space-y-2">
-                <span class="bg-brand text-white text-[10px] font-mono px-3 py-1 rounded-lg font-bold w-fit uppercase">
+                <span class="bg-brand text-white text-[10px] font-display font-extrabold px-3 py-1 rounded-lg w-fit uppercase tracking-wider">
                     {{ $event->material_links['category'] ?? 'Event' }}
                 </span>
-                <h1 class="text-3xl md:text-5xl font-black font-display text-white leading-tight">
+                <h1 class="text-3xl md:text-5xl font-black font-display text-white leading-tight tracking-tight">
                     {{ $event->title }}
                 </h1>
-                <p class="text-sm font-mono text-textMuted">
-                    Dioperasikan oleh: <strong class="text-white">{{ $event->user->name }}</strong>
+                <p class="text-sm font-sans text-textMuted">
+                    Dioperasikan oleh: <strong class="text-white font-display">{{ $event->user->name }}</strong>
                 </p>
             </div>
         </div>
@@ -90,22 +90,22 @@
             <div class="lg:col-span-7 space-y-8">
                 
                 <!-- Event Meta Card -->
-                <div class="bg-surface p-6 rounded-2xl border border-slateBorder grid grid-cols-2 gap-4 text-xs font-mono">
+                <div class="bg-surface p-6 rounded-2xl border border-slateBorder grid grid-cols-2 gap-4 text-xs font-sans">
                     <div class="space-y-1">
-                        <span class="text-textMuted">📅 TANGGAL & WAKTU</span>
-                        <p class="text-sm font-bold text-white">{{ $event->date_time->format('d M Y') }}</p>
-                        <p class="text-xs text-brand font-bold">{{ $event->date_time->format('H:i') }} WIB</p>
+                        <span class="text-textMuted font-display font-semibold uppercase tracking-wider text-[10px]">📅 TANGGAL & WAKTU</span>
+                        <p class="text-sm font-bold font-display text-white">{{ $event->date_time->format('d M Y') }}</p>
+                        <p class="text-xs text-brand font-bold font-display">{{ $event->date_time->format('H:i') }} WIB</p>
                     </div>
                     <div class="space-y-1">
-                        <span class="text-textMuted">📍 LOKASI EVENT</span>
-                        <p class="text-sm font-bold text-white">{{ $event->location_name }}</p>
+                        <span class="text-textMuted font-display font-semibold uppercase tracking-wider text-[10px]">📍 LOKASI EVENT</span>
+                        <p class="text-sm font-bold font-display text-white">{{ $event->location_name }}</p>
                     </div>
                 </div>
 
                 <!-- Deskripsi Event -->
                 <div class="space-y-4">
                     <h3 class="text-xl font-bold font-display text-white border-b border-slateBorder pb-2">Deskripsi Event</h3>
-                    <p class="text-sm text-textMuted leading-relaxed whitespace-pre-line">
+                    <p class="text-sm text-textMuted leading-relaxed whitespace-pre-line font-sans">
                         {{ $event->description }}
                     </p>
                 </div>
@@ -118,7 +118,7 @@
                 <div class="bg-surface p-6 rounded-3xl border border-slateBorder space-y-6 sticky top-24">
                     <div class="border-b border-slateBorder pb-4">
                         <h3 class="text-lg font-bold font-display text-white">Kategori Tiket Tersedia</h3>
-                        <p class="text-xs text-textMuted">Pilih kategori tiket yang ingin kamu pesan</p>
+                        <p class="text-xs text-textMuted font-sans">Pilih kategori tiket yang ingin kamu pesan</p>
                     </div>
 
                     <!-- Loop Pilihan Kategori Tiket (VIP/Regular) -->
@@ -127,13 +127,13 @@
                             <!-- Fallback Single Ticket -->
                             <div class="p-4 rounded-2xl bg-canvas border border-slateBorder space-y-3">
                                 <div class="flex justify-between items-center">
-                                    <h4 class="font-bold text-white text-sm">TIKET REGULAR</h4>
-                                    <span class="text-sm font-extrabold font-mono text-neonGreen">
+                                    <h4 class="font-bold text-white text-sm font-display">TIKET REGULAR</h4>
+                                    <span class="text-base font-black font-display text-neonGreen tracking-tight">
                                         Rp {{ number_format($event->price, 0, ',', '.') }}
                                     </span>
                                 </div>
-                                <p class="text-xs text-textMuted">Akses tiket standar ke area acara</p>
-                                <button class="w-full bg-brand hover:bg-red-500 text-white font-bold text-xs py-3 rounded-xl transition-all font-mono">
+                                <p class="text-xs text-textMuted font-sans">Akses tiket standar ke area acara</p>
+                                <button class="w-full bg-brand hover:bg-red-500 text-white font-bold text-xs py-3 rounded-xl transition-all font-display hover:-translate-y-0.5 shadow-md shadow-brand/10">
                                     Pesan Tiket Ini 🎟
                                 </button>
                             </div>
@@ -143,16 +143,16 @@
                                     <div class="flex justify-between items-start">
                                         <div>
                                             <h4 class="font-bold text-white text-sm font-display">{{ $ticket['name'] }}</h4>
-                                            <span class="text-[10px] font-mono text-textMuted">Sisa Kuota: {{ $ticket['quota'] }} Tiket</span>
+                                            <span class="text-[10px] font-sans text-textMuted">Sisa Kuota: {{ $ticket['quota'] }} Tiket</span>
                                         </div>
-                                        <span class="text-base font-extrabold font-mono text-neonGreen">
+                                        <span class="text-base font-black font-display text-neonGreen tracking-tight">
                                             Rp {{ number_format($ticket['price'], 0, ',', '.') }}
                                         </span>
                                     </div>
                                     
-                                    <p class="text-xs text-textMuted leading-relaxed">{{ $ticket['description'] }}</p>
+                                    <p class="text-xs text-textMuted leading-relaxed font-sans">{{ $ticket['description'] }}</p>
                                     
-                                    <button onclick="alert('Fitur Checkout & Pembayaran QRIS/OVO akan diproses di tahap berikutnya!')" class="w-full bg-brand hover:bg-red-500 text-white font-bold text-xs py-3 rounded-xl transition-all font-mono shadow-md shadow-brand/10">
+                                    <button onclick="alert('Fitur Checkout & Pembayaran QRIS/OVO akan diproses di tahap berikutnya!')" class="w-full bg-brand hover:bg-red-500 text-white font-bold text-xs py-3 rounded-xl transition-all font-display hover:-translate-y-0.5 shadow-md shadow-brand/10">
                                         Pesan Kategori Ini 🎟
                                     </button>
                                 </div>
@@ -169,7 +169,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="w-full border-t border-slateBorder/60 py-6 px-6 md:px-12 flex justify-between items-center text-xs font-mono text-textMuted bg-canvas/90">
+    <footer class="w-full border-t border-slateBorder/60 py-6 px-6 md:px-12 flex justify-between items-center text-xs font-sans text-textMuted bg-canvas/90">
         <p>© 2026 LoketKita.com — Detail Pemesanan Tiket.</p>
     </footer>
 
