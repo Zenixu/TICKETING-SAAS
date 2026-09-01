@@ -87,29 +87,19 @@ class AttendeeSeeder extends Seeder
             }
         }
 
-        // Tambahkan 2-3 attendee random di event lain (biar katalog public & dashboard cross-organizer tidak 0)
-        foreach ($events->slice(1, 3) as $event) {
-            $count = random_int(2, 3);
-            for ($i = 0; $i < $count; $i++) {
-                $user = $users->random();
-                // Idempotent: skip duplicate
-                $exists = Attendee::where('event_id', $event->id)
-                    ->where('user_id', $user->id)
-                    ->exists();
-                if ($exists) continue;
-
-                Attendee::create([
-                    'event_id' => $event->id,
-                    'user_id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'phone_number' => '6281' . random_int(10000000, 99999999),
-                    'qr_code_token' => Str::random(32),
-                    'status' => collect(['registered', 'checked_in', 'pending_payment'])->random(),
-                    'checked_in_at' => null,
-                ]);
-                $created++;
+        // Tambahkan 1 registered per event kosong/paid-only agar ada sample untuk testing check-in
+        foreach ($events as $event) {
+            $hasRegistered = $event->attendees()->where('status', 'registered')->exists();
+            if ($hasRegistered) {
+                continue;
             }
+            $event->attendees()->create([
+                'name' => 'Sample Peserta ' . Str::random(4),
+                'email' => 'sample-' . Str::random(6) . '@tiketkita.test',
+                'phone_number' => '0812' . str_pad((string) random_int(10000000, 99999999), 8, '0', STR_PAD_LEFT),
+                'qr_code_token' => 'TKT-' . strtoupper(Str::random(20)),
+                'status' => 'registered',
+            ]);
         }
 
         $this->command->info("✓ AttendeeSeeder: {$created} attendee berhasil di-seed di {$events->count()} event.");

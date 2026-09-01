@@ -23,9 +23,23 @@ class WebEventController extends Controller
         }
         
         $totalEvents = $events->count();
-        $totalAttendees = 0; // Sementara
-        
-        return view('dashboard', compact('events', 'totalEvents', 'totalAttendees'));
+        $totalAttendees = 0;
+
+        // Counter breakdown per event
+        $attendeeCounts = [];
+        foreach ($events as $event) {
+            $counts = [
+                'registered' => $event->attendees()->where('status', 'registered')->count(),
+                'checked_in' => $event->attendees()->where('status', 'checked_in')->count(),
+                'pending_payment' => $event->attendees()->where('status', 'pending_payment')->count(),
+                'cancelled' => $event->attendees()->where('status', 'cancelled')->count(),
+            ];
+            $counts['total'] = array_sum($counts);
+            $attendeeCounts[$event->id] = $counts;
+            $totalAttendees += $counts['total'];
+        }
+
+        return view('dashboard', compact('events', 'totalEvents', 'totalAttendees', 'attendeeCounts'));
     }
 
     /**

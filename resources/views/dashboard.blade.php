@@ -224,8 +224,10 @@
                     <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-text-muted">Check-in Berhasil</span>
                     <span class="material-symbols-outlined text-mint text-[20px]">qr_code_scanner</span>
                 </div>
-                <div class="text-3xl font-bold text-text-dim num tracking-tight">0</div>
-                <span class="text-[10px] font-mono text-text-dim">Dalam pengembangan</span>
+                <div class="text-3xl font-bold text-text-primary num tracking-tight">
+                    {{ collect($attendeeCounts ?? [])->sum('checked_in') }}
+                </div>
+                <span class="text-[10px] font-mono text-mint">Sudah di lokasi event</span>
             </div>
 
             <div class="glass rounded-2xl p-5 flex flex-col gap-3">
@@ -261,6 +263,7 @@
                                 <th class="p-4">Tanggal &amp; Waktu</th>
                                 <th class="p-4">Lokasi</th>
                                 <th class="p-4">Harga</th>
+                                <th class="p-4">Peserta</th>
                                 <th class="p-4 text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -287,10 +290,31 @@
                                             Rp {{ number_format($event->price, 0, ',', '.') }}
                                         </td>
                                         <td class="p-4">
-                                            <div class="flex items-center justify-end gap-2">
-                                                <a href="{{ route('events.public-show', $event->id) }}" class="press glass-pill text-text-muted hover:text-text-primary hover:border-white/20 px-3 py-1.5 text-xs font-semibold rounded-full transition-colors flex items-center gap-1">
-                                                    <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                            @php $counts = $attendeeCounts[$event->id] ?? ['total' => 0, 'registered' => 0, 'checked_in' => 0, 'pending_payment' => 0]; @endphp
+                                            <div class="flex flex-col gap-1 text-[11px] font-mono">
+                                                <span class="text-text-primary font-semibold num">
+                                                    {{ $counts['total'] }} <span class="text-text-dim font-normal">/ {{ $event->quota }}</span>
+                                                </span>
+                                                <span class="text-text-dim text-[10px]">
+                                                    <span class="text-mint">{{ $counts['checked_in'] }}</span> ✓ ·
+                                                    <span>{{ $counts['registered'] }}</span> reg ·
+                                                    <span class="text-coral">{{ $counts['pending_payment'] }}</span> pending
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <div class="flex items-center justify-end gap-1.5 flex-wrap">
+                                                <a href="{{ route('events.public-show', $event->id) }}" class="press glass-pill text-text-muted hover:text-text-primary hover:border-white/20 px-2.5 py-1.5 text-[11px] font-semibold rounded-full transition-colors flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-[13px]">visibility</span>
                                                     Detail
+                                                </a>
+                                                <a href="{{ route('organizer.events.attendees', $event->id) }}" class="press glass-pill text-mint hover:bg-mint hover:text-canvas border-mint/30 px-2.5 py-1.5 text-[11px] font-semibold rounded-full transition-colors flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-[13px]">group</span>
+                                                    Peserta
+                                                </a>
+                                                <a href="{{ route('organizer.events.scan', $event->id) }}" class="press glass-pill text-coral hover:bg-coral hover:text-white border-coral/30 px-2.5 py-1.5 text-[11px] font-semibold rounded-full transition-colors flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-[13px]">qr_code_scanner</span>
+                                                    Scan
                                                 </a>
                                                 <form action="{{ route('events.destroy', $event->id) }}" method="POST" onsubmit="return confirm('Hapus event ini? Tindakan tidak dapat dibatalkan.');">
                                                     @csrf

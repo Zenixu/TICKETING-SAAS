@@ -8,6 +8,7 @@ use App\Http\Controllers\OrganizerRequestController;
 use App\Http\Controllers\EventCatalogController;
 use App\Http\Controllers\WebEventController;
 use App\Http\Controllers\EventRegistrationController;
+use App\Http\Controllers\CheckinController;
 
 // 1. PUBLIC ROUTES (Landing & Katalog Event untuk User Biasa)
 Route::get('/', [EventCatalogController::class, 'index'])->name('welcome');
@@ -38,6 +39,14 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard', [WebEventController::class, 'dashboard'])->name('dashboard');
         Route::post('events', [WebEventController::class, 'store'])->name('events.store');
         Route::delete('events/{event}', [WebEventController::class, 'destroy'])->name('events.destroy');
+
+        // ORGANIZER: Check-in System (Plan B)
+        Route::prefix('organizer/events/{event}')->name('organizer.events.')->group(function () {
+            Route::get('attendees', [CheckinController::class, 'attendees'])->name('attendees');
+            Route::get('scan', [CheckinController::class, 'scanPage'])->name('scan');
+            Route::post('scan', [CheckinController::class, 'processScan'])->name('scan.process');
+            Route::post('attendees/{attendee}/checkin', [CheckinController::class, 'manualCheckIn'])->name('attendees.checkin');
+        });
     });
 
     // END-USER: Pendaftaran tiket event (wajib login)
