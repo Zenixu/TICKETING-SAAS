@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>LoketKita — SaaS Tiketing Khusus Event Musik & Cosplay</title>
+    <title>TiketKita — SaaS Tiketing Khusus Event Musik & Cosplay</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script id="tailwind-config">
@@ -129,7 +129,7 @@
                 <div class="w-10 h-10 bg-primary-container text-on-primary-container rounded-xl flex items-center justify-center font-black text-xl group-hover:scale-105 transition-all shadow-[0_0_15px_rgba(255,82,94,0.4)]">
                     L
                 </div>
-                <span class="font-headline-md text-lg md:text-xl font-bold text-on-surface tracking-tighter">LoketKita<span class="text-primary-container">.com</span></span>
+                <span class="font-headline-md text-lg md:text-xl font-bold text-on-surface tracking-tighter">TiketKita<span class="text-primary-container">.com</span></span>
             </a>
 
             <!-- Search Bar (Responsive Search) -->
@@ -146,7 +146,10 @@
                     @elseif(Auth::user()->role === 'organizer')
                         <a class="text-xs font-bold text-on-surface bg-surface-container-high px-3 md:px-5 py-2.5 rounded-full border border-outline-variant/30 transition-all hover:bg-surface-container-highest" href="{{ route('dashboard') }}">Dashboard Organizer ↗</a>
                     @else
-                        <a class="text-xs font-bold text-on-surface bg-surface-container-high px-3 md:px-5 py-2.5 rounded-full border border-outline-variant/30 transition-all hover:bg-surface-container-highest" href="https://wa.me/6282114073679?text=Halo%20Admin%20LoketKita,%20saya%20tertarik%20mendaftarkan%20event%20komunitas%20saya" target="_blank">Buat Event Kamu 🚀</a>
+                        <form method="POST" action="{{ route('request-organizer') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-xs font-bold text-on-surface bg-surface-container-high px-3 md:px-5 py-2.5 rounded-full border border-outline-variant/30 transition-all hover:bg-surface-container-highest">Buat Event Kamu 🚀</button>
+                        </form>
                     @endif
 
                     <form method="POST" action="{{ route('logout') }}" class="inline">
@@ -155,8 +158,8 @@
                     </form>
                 @else
                     <a class="text-xs font-bold text-on-surface-variant hover:text-on-surface px-2 py-1" href="{{ route('login') }}">Masuk</a>
-                    <a class="hidden sm:inline-block text-xs font-bold text-on-surface-variant hover:text-on-surface px-2 py-1 mr-2" href="{{ route('register') }}">Daftar</a>
-                    <a href="https://wa.me/6282114073679?text=Halo%20Admin%20LoketKita,%20saya%20tertarik%20mendaftarkan%20event%20komunitas%20saya" target="_blank" class="bg-primary-container hover:bg-primary-container/90 text-on-primary-container px-4 py-2.5 rounded-full text-xs font-bold shadow-[0_0_20px_rgba(255,82,94,0.3)] transition-all flex items-center gap-1 shrink-0">
+                    <a class="text-xs font-bold text-on-surface-variant hover:text-on-surface px-2 py-1" href="{{ route('register') }}">Daftar</a>
+                    <a href="{{ route('register') }}" class="bg-primary-container hover:bg-primary-container/90 text-on-primary-container px-4 py-2.5 rounded-full text-xs font-bold shadow-[0_0_20px_rgba(255,82,94,0.3)] transition-all flex items-center gap-1 shrink-0">
                         Buat Event
                         <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
                     </a>
@@ -190,9 +193,28 @@
                     </p>
                     
                     <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2 w-full sm:w-auto">
-                        <a href="https://wa.me/6282114073679?text=Halo%20Admin%20LoketKita,%20saya%20ingin%20membuat%20event%20di%20LoketKita" target="_blank" class="w-full sm:w-auto text-center bg-primary-container hover:bg-primary-container/90 text-on-primary-container font-bold px-8 py-3.5 rounded-full shadow-[0_0_24px_rgba(255,82,94,0.3)] transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-0.5">
-                            Buat Event Sekarang 🚀
-                        </a>
+                        @auth
+                            @if(Auth::user()->role === 'organizer')
+                                <a href="{{ route('dashboard') }}" class="w-full sm:w-auto text-center bg-primary-container hover:bg-primary-container/90 text-on-primary-container font-bold px-8 py-3.5 rounded-full shadow-[0_0_24px_rgba(255,82,94,0.3)] transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-0.5">
+                                    Dashboard Organizer ↗
+                                </a>
+                            @elseif(Auth::user()->role === 'admin')
+                                <a href="{{ route('admin.index') }}" class="w-full sm:w-auto text-center bg-primary-container hover:bg-primary-container/90 text-on-primary-container font-bold px-8 py-3.5 rounded-full shadow-[0_0_24px_rgba(255,82,94,0.3)] transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-0.5">
+                                    Admin Console 🛠
+                                </a>
+                            @else
+                                <form method="POST" action="{{ route('request-organizer') }}" class="w-full sm:w-auto">
+                                    @csrf
+                                    <button type="submit" class="w-full bg-primary-container hover:bg-primary-container/90 text-on-primary-container font-bold px-8 py-3.5 rounded-full shadow-[0_0_24px_rgba(255,82,94,0.3)] transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-0.5">
+                                        Buat Event Sekarang 🚀
+                                    </button>
+                                </form>
+                            @endif
+                        @else
+                            <a href="{{ route('register') }}" class="w-full sm:w-auto text-center bg-primary-container hover:bg-primary-container/90 text-on-primary-container font-bold px-8 py-3.5 rounded-full shadow-[0_0_24px_rgba(255,82,94,0.3)] transition-all flex items-center justify-center gap-2 text-sm hover:-translate-y-0.5">
+                                Buat Event Sekarang 🚀
+                            </a>
+                        @endauth
                         <a href="#events-section" class="w-full sm:w-auto text-center bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-outline-variant/30 font-bold px-8 py-3.5 rounded-full transition-all text-sm hover:-translate-y-0.5">
                             Cari Event Menarik 🎟
                         </a>
@@ -236,7 +258,7 @@
         <section class="w-full max-w-container-max mx-auto px-4 md:px-8 xl:px-12 py-4">
             <div class="bg-surface-container-high/60 border border-outline-variant/10 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <span class="text-xs font-display font-bold text-on-surface-variant flex items-center gap-2 shrink-0">
-                    <span class="material-symbols-outlined text-brand text-sm">explore</span> Jelajahi Kategori Populer LoketKita:
+                    <span class="material-symbols-outlined text-brand text-sm">explore</span> Jelajahi Kategori Populer TiketKita:
                 </span>
                 <div class="flex items-center flex-wrap gap-2 text-xs font-bold w-full sm:w-auto overflow-x-auto sm:overflow-visible pb-2 sm:pb-0">
                     <a href="/?category=Musik" class="px-4 py-2.5 rounded-xl bg-surface border border-outline-variant/30 hover:border-brand/40 text-on-surface hover:text-white transition-all flex items-center gap-2 shrink-0 whitespace-nowrap">
@@ -245,7 +267,7 @@
                     <a href="/?category=Cosplay" class="px-4 py-2.5 rounded-xl bg-surface border border-outline-variant/30 hover:border-brand/40 text-on-surface hover:text-white transition-all flex items-center gap-2 shrink-0 whitespace-nowrap">
                         🎭 Cosplay & Anime Fest
                     </a>
-                    <a href="https://wa.me/6282114073679?text=Halo%20Admin%20LoketKita,%20saya%20tertarik%20mendaftarkan%20event%20komunitas%20saya" target="_blank" class="px-4 py-2.5 rounded-xl bg-primary-container/10 border border-primary-container/20 text-primary-container hover:bg-primary-container/20 transition-all flex items-center gap-2 shrink-0 whitespace-nowrap">
+                    <a href="https://wa.me/6282114073679?text=Halo%20Admin%20TiketKita,%20saya%20tertarik%20mengadakan%20event%20kustom" target="_blank" class="px-4 py-2.5 rounded-xl bg-primary-container/10 border border-primary-container/20 text-primary-container hover:bg-primary-container/20 transition-all flex items-center gap-2 shrink-0 whitespace-nowrap">
                         🚀 Ajukan Event Kustom
                     </a>
                 </div>
@@ -303,6 +325,68 @@
             </div>
         </section>
 
+        <!-- ORGANIZER PRICING SECTION (New) -->
+        <section id="pricing-section" class="w-full max-w-container-max mx-auto px-4 md:px-8 xl:px-12 py-12 my-8 relative overflow-hidden">
+            <!-- Background Glows -->
+            <div class="absolute top-1/2 left-0 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl -translate-y-1/2"></div>
+            <div class="absolute top-1/2 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl -translate-y-1/2"></div>
+            
+            <div class="text-center mb-10 relative z-10">
+                <span class="bg-primary-container/20 text-primary-container font-label-mono text-[10px] sm:text-xs font-bold px-4 py-1.5 inline-flex items-center gap-2 rounded-full border border-primary/20 mb-4 shadow-[inset_1px_1px_0_rgba(255,179,178,0.2)]">
+                    <span class="material-symbols-outlined text-sm sm:text-base">add_business</span> Join as Organizer
+                </span>
+                <h2 class="text-3xl md:text-5xl font-black text-on-surface mb-4 tracking-tight">Ingin Membuat Event? <br/><span class="text-primary-container">Bisa Disini.</span></h2>
+                <p class="text-on-surface-variant text-sm md:text-base max-w-2xl mx-auto font-sans">Pilih paket lisensi organizer yang sesuai dengan kebutuhan komunitas kamu. Pembayaran 100% aman via QRIS.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto relative z-10">
+                <!-- Paket Reguler -->
+                <div class="bg-surface-container rounded-3xl p-8 border border-outline-variant/30 flex flex-col justify-between hover:border-outline transition-all duration-300 hover:shadow-2xl hover:shadow-black/50 group">
+                    <div>
+                        <h3 class="text-2xl font-black text-on-surface mb-2 font-display">Paket Reguler</h3>
+                        <div class="flex items-baseline gap-1 mb-6">
+                            <span class="text-sm font-bold text-on-surface-variant font-mono">Rp</span>
+                            <span class="text-4xl font-black text-white tracking-tight">150.000</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant font-sans mb-6">Paket dasar yang sangat cocok untuk membuat gig studio atau meetup komunitas perdana.</p>
+                        <ul class="space-y-4 mb-8 text-sm font-sans text-on-surface">
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-sm">check_circle</span> Hanya bisa membuat <b>1 Event</b> aktif</li>
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-sm">check_circle</span> Akses Dashboard Analytics Standar</li>
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-error/60 text-sm">cancel</span> Maksimal kuota 200 Tiket</li>
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-error/60 text-sm">cancel</span> Tidak ada fitur Add-ons/Custom Service</li>
+                        </ul>
+                    </div>
+                    <button onclick="openQrisModal('REGULER', '150.000')" class="w-full py-4 rounded-xl border border-outline-variant hover:border-primary-container text-on-surface hover:bg-primary-container/10 font-bold transition-all font-display">
+                        Pilih Paket Reguler
+                    </button>
+                </div>
+
+                <!-- Paket Spesial -->
+                <div class="bg-surface-container-highest rounded-3xl p-8 border border-primary-container/50 flex flex-col justify-between relative hover:-translate-y-2 transition-all duration-300 shadow-[0_0_30px_rgba(255,82,94,0.15)] group">
+                    <div class="absolute top-0 right-8 transform -translate-y-1/2 bg-primary-container text-on-primary-container font-black text-[10px] px-4 py-1.5 rounded-full uppercase tracking-widest font-label-mono">
+                        Paling Laris 🔥
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black text-primary-fixed mb-2 font-display">Paket Spesial</h3>
+                        <div class="flex items-baseline gap-1 mb-6">
+                            <span class="text-sm font-bold text-primary-fixed-dim font-mono">Rp</span>
+                            <span class="text-4xl font-black text-white tracking-tight">250.000</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant font-sans mb-6">Lisensi komplit untuk festival skala besar dengan segala kemudahan monetisasi merchandise.</p>
+                        <ul class="space-y-4 mb-8 text-sm font-sans text-on-surface">
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-sm">check_circle</span> Bisa membuat <b>Banyak Event</b> (Unlimited)</li>
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-sm">check_circle</span> Akses Dashboard Analytics Lengkap</li>
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-sm">check_circle</span> Kuota Tiket <b>Unlimited</b></li>
+                            <li class="flex items-center gap-3"><span class="material-symbols-outlined text-secondary-fixed text-sm">check_circle</span> Akses fitur <b>Custom Service / Add-ons</b> (Jualan Merchandise)</li>
+                        </ul>
+                    </div>
+                    <button onclick="openQrisModal('SPESIAL', '250.000')" class="w-full py-4 rounded-xl bg-primary-container hover:bg-primary text-on-primary-container font-black transition-all shadow-[0_0_20px_rgba(255,82,94,0.4)] hover:shadow-[0_0_30px_rgba(255,82,94,0.6)] font-display">
+                        Pilih Paket Spesial 🚀
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <!-- LIVE EVENTS EXHIBIT SHOWCASE (Responsive Card Catalog) -->
         <section id="events-section" class="w-full bg-surface-container-low py-12 px-4 md:px-8 xl:px-12 border-y border-outline-variant/10 my-8">
             <div class="max-w-container-max mx-auto space-y-8">
@@ -333,8 +417,8 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($events as $event)
                         @php
-                            $banner = $event->material_links['banner_url'] ?? 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80';
-                            $catName = $event->material_links['category'] ?? 'Event';
+                            $banner = $event->banner_path ?? 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80';
+                            $catName = $event->category ?? 'Event';
                         @endphp
                         <div class="bg-surface-container-high rounded-2xl overflow-hidden shadow-lg border border-outline-variant/10 transition-all hover:-translate-y-1.5 hover:shadow-2xl hover:border-brand/30 flex flex-col justify-between group">
                             
@@ -395,7 +479,7 @@
                         Berhenti membuang budget komunitas Anda untuk potongan platform. Gunakan model flat-fee licensing kami dan simpan 100% pendapatan tiket Anda.
                     </p>
                 </div>
-                <a href="https://wa.me/6282114073679?text=Halo%20Admin%20LoketKita,%20saya%20tertarik%20mendaftarkan%20event%20komunitas%20saya" target="_blank" class="w-full md:w-auto justify-center bg-surface text-on-surface font-bold text-sm px-8 py-4 rounded-full shadow-2xl transition-all z-10 flex items-center gap-2 whitespace-nowrap hover:-translate-y-0.5">
+                <a href="https://wa.me/6282114073679?text=Halo%20Admin%20TiketKita,%20saya%20tertarik%20mendaftarkan%20event%20komunitas%20saya" target="_blank" class="w-full md:w-auto justify-center bg-surface text-on-surface font-bold text-sm px-8 py-4 rounded-full shadow-2xl transition-all z-10 flex items-center gap-2 whitespace-nowrap hover:-translate-y-0.5">
                     Hubungi Admin WA (082114073679)
                     <span class="material-symbols-outlined text-primary-container">chat</span>
                 </a>
@@ -407,7 +491,7 @@
     <!-- FOOTER (Responsive Footer) -->
     <footer class="w-full bg-surface-container-lowest border-t border-outline-variant/10 py-8 px-4 md:px-8 xl:px-12">
         <div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-            <p class="text-xs text-on-surface-variant font-sans">© 2026 LoketKita.com — Platform SaaS Tiketing Khusus Event Musik & Cosplay Indonesia.</p>
+            <p class="text-xs text-on-surface-variant font-sans">© 2026 TiketKita.com — Platform SaaS Tiketing Khusus Event Musik & Cosplay Indonesia.</p>
             <div class="flex items-center gap-sm bg-surface-container-high px-4 py-2 rounded-full border border-outline-variant/20">
                 <span class="relative flex h-2 w-2">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
@@ -418,8 +502,74 @@
         </div>
     </footer>
 
+    <!-- QRIS Payment Modal -->
+    <div id="qrisModal" class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-md overflow-y-auto w-full h-full flex items-center justify-center">
+        <div class="relative p-5 mx-auto w-full max-w-md">
+            <div class="bg-surface-container-highest rounded-3xl border border-outline-variant/30 shadow-2xl flex flex-col relative overflow-hidden">
+                <!-- Header -->
+                <div class="bg-primary-container p-6 text-center">
+                    <button onclick="closeQrisModal()" class="absolute top-4 right-4 text-on-primary-container/70 hover:text-on-primary-container transition-colors font-bold text-xl">&times;</button>
+                    <h3 class="text-xl font-black text-on-primary-container font-display">Pembayaran Lisensi</h3>
+                    <p class="text-xs text-on-primary-container/80 mt-1 font-mono uppercase tracking-widest" id="modalPackageName">PAKET REGULER</p>
+                </div>
+                
+                <!-- Content -->
+                <div class="p-8 text-center space-y-6">
+                    <div>
+                        <p class="text-sm text-on-surface-variant font-sans mb-1">Total Tagihan:</p>
+                        <h4 class="text-3xl font-black text-white font-mono tracking-tight" id="modalPackagePrice">Rp 150.000</h4>
+                    </div>
+
+                    <!-- QRIS Image -->
+                    <div class="bg-white p-4 rounded-2xl mx-auto w-48 flex flex-col items-center justify-center border-4 border-dashed border-primary/40 overflow-hidden">
+                        <img src="{{ asset('images/qrish.jpeg') }}" alt="QRIS Asli" class="w-full h-auto object-contain rounded">
+                    </div>
+
+                    <div class="bg-surface-container rounded-xl p-4 text-left border border-outline-variant/20">
+                        <h5 class="text-xs font-bold text-secondary-fixed mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-sm">info</span> Cara Pembayaran:</h5>
+                        <ol class="text-[11px] text-on-surface-variant space-y-2 list-decimal pl-4 font-sans">
+                            <li>Scan QRIS di atas dengan aplikasi m-banking atau e-wallet (GoPay, OVO, Dana).</li>
+                            <li>Pastikan nama penerima adalah <b>TiketKita Event Platform</b>.</li>
+                            <li>Simpan bukti transfer (screenshot).</li>
+                            <li>Klik tombol di bawah untuk konfirmasi ke WhatsApp Admin.</li>
+                        </ol>
+                    </div>
+
+                    <a id="btnConfirmWa" href="#" target="_blank" class="block w-full py-3.5 rounded-xl bg-secondary-fixed hover:bg-secondary text-on-secondary-fixed font-black transition-all shadow-lg font-display text-sm hover:-translate-y-0.5">
+                        Konfirmasi via WhatsApp 📲
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- CAROUSEL SLIDE JAVASCRIPT (Loket.com Interaction) -->
     <script>
+        // Modal QRIS Logic
+        function openQrisModal(packageName, price) {
+            document.getElementById('modalPackageName').innerText = 'PAKET ' + packageName;
+            document.getElementById('modalPackagePrice').innerText = 'Rp ' + price;
+            
+            // Generate WA Link
+            const waNumber = '6282114073679';
+            const text = encodeURIComponent(`Halo Admin TiketKita, saya ingin berlangganan lisensi *Paket ${packageName}* seharga *Rp ${price}*. Berikut adalah bukti transfer QRIS saya:`);
+            document.getElementById('btnConfirmWa').href = `https://wa.me/${waNumber}?text=${text}`;
+            
+            document.getElementById('qrisModal').classList.remove('hidden');
+        }
+
+        function closeQrisModal() {
+            document.getElementById('qrisModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('qrisModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeQrisModal();
+            }
+        });
+
+        // Carousel Logic
         const slides = [
             {
                 image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDg7bbXH7hX427XdNNzQP97rThV5uN3xHZx1qioqS37Qfe0A4_0siM2m9FF8j-T6X4pts00E-7OCzrP61GUkPSiRsyEsNwinDRJt1rzJb-b9aEeJlpn2dUv5Zci_YwT1cSw2THXN6IdLRX6JbnRkqRgWvp4cCRNxZVBc1RcF0kOiEAlV04n-oG5XmoJmS8re-5xCQdKP9wlJpt7CuiIi5tJvT0Mown4oJ7AGnuI5t2HVMGL6n7kCWo0Ig",

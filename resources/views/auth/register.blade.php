@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar — LoketKita.com</title>
+    <title>Daftar — TiketKita.com</title>
     
     <!-- Apple Typography System -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,11 +50,16 @@
 
     <div class="w-full max-w-md space-y-8 bg-surface p-8 rounded-3xl border border-slateBorder shadow-2xl">
         
+        <!-- Back to Home -->
+        <a href="/" class="inline-flex items-center gap-1.5 text-xs text-textMuted hover:text-white transition-colors mb-2">
+            <span>←</span> Kembali ke Katalog
+        </a>
+
         <!-- Header -->
         <div class="text-center space-y-2">
             <a href="/" class="inline-flex items-center gap-2 mb-2">
                 <div class="w-8 h-8 bg-brand text-canvas rounded-xl flex items-center justify-center font-black font-display text-lg">L</div>
-                <span class="font-extrabold tracking-tight text-xl font-display text-white">LoketKita<span class="text-brand">.com</span></span>
+                <span class="font-extrabold tracking-tight text-xl font-display text-white">TiketKita<span class="text-brand">.com</span></span>
             </a>
             <h1 class="text-2xl font-bold font-display text-white">Buat Akun Baru</h1>
             <p class="text-xs text-textMuted">Mulai beli tiket dan jelajahi event favoritmu</p>
