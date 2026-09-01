@@ -6,6 +6,7 @@ use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrganizerRequestController;
 use App\Http\Controllers\EventCatalogController;
+use App\Http\Controllers\WebEventController;
 
 // 1. PUBLIC ROUTES (Landing & Katalog Event untuk User Biasa)
 Route::get('/', [EventCatalogController::class, 'index'])->name('welcome');
@@ -25,17 +26,17 @@ Route::middleware('guest')->group(function () {
 
 // 3. AUTHENTICATED ROUTES
 Route::middleware('auth')->group(function () {
-    // Mendukung POST dan GET untuk route logout agar aman jika diakses via URL biasa
-    Route::match(['get', 'post'], 'logout', [AuthController::class, 'logout'])->name('logout');
+    // Ubah POST-only untuk keamanan CSRF
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     // User Biasa mengajukan diri menjadi Organizer Event
     Route::post('request-organizer', [OrganizerRequestController::class, 'request'])->name('request-organizer');
 
-    // ROUTE ORGANIZER & ADMIN (Pembuat Event & Tiket)
+    // Dashboard Organizer & Admin
     Route::middleware('role:organizer,admin')->group(function () {
-        Route::get('dashboard', function () {
-            return view('dashboard');
-        })->name('dashboard');
+        Route::get('dashboard', [WebEventController::class, 'dashboard'])->name('dashboard');
+        Route::post('events', [WebEventController::class, 'store'])->name('events.store');
+        Route::delete('events/{event}', [WebEventController::class, 'destroy'])->name('events.destroy');
     });
 
     // ROUTE KHUSUS ADMIN CONSOLE (Hanya Admin yang bisa akses)

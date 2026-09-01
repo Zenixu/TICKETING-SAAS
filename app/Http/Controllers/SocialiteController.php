@@ -25,15 +25,24 @@ class SocialiteController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            // Cari user berdasarkan email, jika belum ada buat user baru otomatis
-            $user = User::updateOrCreate([
-                'email' => $googleUser->getEmail(),
-            ], [
-                'name' => $googleUser->getName(),
-                'google_oauth_token' => $googleUser->token,
-                // Email dari Google sudah terverifikasi otomatis
-                'email_verified_at' => now(),
-            ]);
+            // Cari user berdasarkan email
+            $user = User::where('email', $googleUser->getEmail())->first();
+
+            if ($user) {
+                // Jika user sudah ada, hanya update token dan set email verified (jangan timpa name/password)
+                $user->update([
+                    'google_oauth_token' => $googleUser->token,
+                    'email_verified_at' => $user->email_verified_at ?? now(),
+                ]);
+            } else {
+                // Jika user belum ada, buat baru
+                $user = User::create([
+                    'email' => $googleUser->getEmail(),
+                    'name' => $googleUser->getName(),
+                    'google_oauth_token' => $googleUser->token,
+                    'email_verified_at' => now(),
+                ]);
+            }
 
             Auth::login($user);
             session()->regenerate();

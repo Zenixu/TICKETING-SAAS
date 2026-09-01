@@ -21,6 +21,10 @@ class OrganizerRequestController extends Controller
             'organizer_status' => 'pending'
         ]);
 
-        return back()->with('success', 'Pengajuan Anda sebagai Organizer berhasil dikirim! Menunggu persetujuan Admin.');
+        $adminWaNumber = '6282114073679';
+        $message = urlencode("Halo Admin LoketKita, saya {$user->name} ({$user->email}) telah mengajukan permintaan untuk menjadi Event Organizer di platform LoketKita. Mohon informasi lebih lanjut terkait persetujuannya.");
+        $waLink = "https://wa.me/{$adminWaNumber}?text={$message}";
+
+        return redirect()->away($waLink);
     }
 }

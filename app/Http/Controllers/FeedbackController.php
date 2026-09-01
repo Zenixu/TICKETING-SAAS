@@ -14,6 +14,14 @@ class FeedbackController extends BaseController
      */
     public function store(Request $request, Attendee $attendee)
     {
+        // Ensure the attendee belongs to the authenticated user
+        if ($attendee->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized access.'
+            ], 403);
+        }
+
         // Ensure attendee has actually checked in first
         if ($attendee->status !== 'checked_in') {
             return response()->json([
@@ -53,6 +61,14 @@ class FeedbackController extends BaseController
      */
     public function showCertificate(Request $request, Attendee $attendee)
     {
+        // Ensure the attendee belongs to the authenticated user
+        if ($attendee->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized access.'
+            ], 403);
+        }
+
         // Must check in & fill feedback before claiming certificate
         if ($attendee->status !== 'checked_in' || !$attendee->feedback()->exists()) {
             return response()->json([
@@ -74,6 +90,14 @@ class FeedbackController extends BaseController
      */
     public function showMaterials(Request $request, Attendee $attendee)
     {
+        // Ensure the attendee belongs to the authenticated user
+        if ($attendee->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized access.'
+            ], 403);
+        }
+
         // Must check in & fill feedback before accessing materials
         if ($attendee->status !== 'checked_in' || !$attendee->feedback()->exists()) {
             return response()->json([

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\EventPayment;
 use App\Models\Attendee;
 use Illuminate\Http\Request;

@@ -24,6 +24,13 @@ class Event extends Model
         'status',
         'certificate_template_path',
         'material_links',
+        'banner_path',
+        'category',
+        'whatsapp_number',
+        'bank_account',
+        'custom_services',
+        'price',
+        'quota'
     ];
 
     protected $casts = [
@@ -31,6 +38,7 @@ class Event extends Model
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
         'material_links' => 'json',
+        'custom_services' => 'json',
     ];
 
     /**

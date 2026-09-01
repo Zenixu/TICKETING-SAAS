@@ -17,7 +17,7 @@ class EventCatalogController extends Controller
         $query = Event::with('user')->where('status', 'active');
 
         if ($category) {
-            $query->where('material_links->category', $category);
+            $query->where('category', $category);
         }
 
         $events = $query->latest()->get();
