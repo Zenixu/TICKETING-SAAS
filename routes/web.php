@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrganizerRequestController;
 use App\Http\Controllers\EventCatalogController;
 use App\Http\Controllers\WebEventController;
+use App\Http\Controllers\EventRegistrationController;
 
 // 1. PUBLIC ROUTES (Landing & Katalog Event untuk User Biasa)
 Route::get('/', [EventCatalogController::class, 'index'])->name('welcome');
@@ -38,6 +39,11 @@ Route::middleware('auth')->group(function () {
         Route::post('events', [WebEventController::class, 'store'])->name('events.store');
         Route::delete('events/{event}', [WebEventController::class, 'destroy'])->name('events.destroy');
     });
+
+    // END-USER: Pendaftaran tiket event (wajib login)
+    Route::post('events/{event}/register', [EventRegistrationController::class, 'store'])->name('events.register');
+    Route::get('events/{event}/success/{attendee}', [EventRegistrationController::class, 'success'])->name('events.success');
+    Route::get('my-tickets', [EventRegistrationController::class, 'myTickets'])->name('my-tickets');
 
     // ROUTE KHUSUS ADMIN CONSOLE (Hanya Admin yang bisa akses)
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
