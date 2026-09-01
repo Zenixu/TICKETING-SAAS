@@ -53,6 +53,22 @@ class Attendee extends Model
     }
 
     /**
+     * Get the payment proof submitted by the attendee.
+     */
+    public function paymentProof(): HasOne
+    {
+        return $this->hasOne(PaymentProof::class);
+    }
+
+    /**
+     * Get the latest payment proof (alias untuk paymentProof yang lebih konsisten dengan hasOne).
+     */
+    public function latestPaymentProof(): HasOne
+    {
+        return $this->hasOne(PaymentProof::class)->latestOfMany();
+    }
+
+    /**
      * Check if this attendee is allowed to check in.
      * Strict gate: only 'registered' (paid & confirmed) may check in.
      * 'pending_payment' and 'cancelled' are blocked.
@@ -71,6 +87,7 @@ class Attendee extends Model
             'registered' => 'Terdaftar',
             'checked_in' => 'Sudah Check-in',
             'pending_payment' => 'Menunggu Bayar',
+            'pending_verification' => 'Verifikasi Bukti',
             'cancelled' => 'Dibatalkan',
             default => ucfirst(str_replace('_', ' ', $this->status)),
         };
@@ -85,6 +102,7 @@ class Attendee extends Model
             'registered' => 'mint',
             'checked_in' => 'mint',
             'pending_payment' => 'coral',
+            'pending_verification' => 'coral',
             'cancelled' => 'text-muted',
             default => 'text-muted',
         };

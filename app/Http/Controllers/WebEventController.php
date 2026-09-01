@@ -32,6 +32,7 @@ class WebEventController extends Controller
                 'registered' => $event->attendees()->where('status', 'registered')->count(),
                 'checked_in' => $event->attendees()->where('status', 'checked_in')->count(),
                 'pending_payment' => $event->attendees()->where('status', 'pending_payment')->count(),
+                'pending_verification' => $event->attendees()->where('status', 'pending_verification')->count(),
                 'cancelled' => $event->attendees()->where('status', 'cancelled')->count(),
             ];
             $counts['total'] = array_sum($counts);

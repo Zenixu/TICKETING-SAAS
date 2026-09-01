@@ -41,19 +41,21 @@
                 @php
                     $event = $attendee->event;
                     $isPending = $attendee->status === 'pending_payment';
+                    $isVerifying = $attendee->status === 'pending_verification';
                     $isCheckedIn = $attendee->status === 'checked_in';
                 @endphp
-                <a href="{{ route('events.success', ['event' => $event->id, 'attendee' => $attendee->id]) }}" class="glass-strong rounded-3xl overflow-hidden hover:border-coral/30 transition-colors group">
+                <div class="glass-strong rounded-3xl overflow-hidden hover:border-coral/30 transition-colors group">
+                    <a href="{{ route('events.success', ['event' => $event->id, 'attendee' => $attendee->id]) }}" class="block">
 
                     {{-- Status Banner --}}
-                    <div class="px-5 py-2.5 {{ $isPending ? 'bg-coral/10 border-b border-coral/20' : ($isCheckedIn ? 'bg-mint/10 border-b border-mint/20' : 'bg-white/5 border-b border-white/5') }}">
+                    <div class="px-5 py-2.5 {{ $isPending || $isVerifying ? 'bg-coral/10 border-b border-coral/20' : ($isCheckedIn ? 'bg-mint/10 border-b border-mint/20' : 'bg-white/5 border-b border-white/5') }}">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-1.5">
                                 <span class="material-symbols-outlined text-[14px] {{ $isPending ? 'text-coral' : ($isCheckedIn ? 'text-mint' : 'text-text-primary') }}">
-                                    {{ $isPending ? 'hourglass_empty' : ($isCheckedIn ? 'verified' : 'check_circle') }}
+                                    {{ $isPending ? 'hourglass_empty' : ($isVerifying ? 'pending_actions' : ($isCheckedIn ? 'verified' : 'check_circle')) }}
                                 </span>
-                                <span class="text-[10px] font-semibold tracking-wide uppercase {{ $isPending ? 'text-coral' : ($isCheckedIn ? 'text-mint' : 'text-text-primary') }}">
-                                    {{ $isPending ? 'Menunggu Pembayaran' : ($isCheckedIn ? 'Sudah Check-in' : 'Tiket Aktif') }}
+                                <span class="text-[10px] font-semibold tracking-wide uppercase {{ $isPending || $isVerifying ? 'text-coral' : ($isCheckedIn ? 'text-mint' : 'text-text-primary') }}">
+                                    {{ $isPending ? 'Menunggu Pembayaran' : ($isVerifying ? 'Verifikasi Bukti' : ($isCheckedIn ? 'Sudah Check-in' : 'Tiket Aktif')) }}
                                 </span>
                             </div>
                             <span class="text-[10px] font-mono text-text-dim">#{{ substr($attendee->id, 0, 8) }}</span>
@@ -87,14 +89,25 @@
                         </div>
 
                         <div class="flex items-center justify-between pt-2 border-t border-white/5">
-                            <span class="text-[10px] text-text-muted font-mono">QR tersedia</span>
+                            <span class="text-[10px] text-text-muted font-mono">{{ $isPending ? 'Belum upload bukti' : 'QR tersedia' }}</span>
                             <span class="text-[11px] text-coral font-medium inline-flex items-center gap-1">
                                 Lihat QR
                                 <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                             </span>
                         </div>
                     </div>
-                </a>
+                    </a>
+
+                    {{-- Action Button (for unpaid/verifying) --}}
+                    @if($isPending || $isVerifying)
+                    <div class="px-5 pb-5 -mt-2">
+                        <a href="{{ route('payment.submit-form', $attendee->id) }}" class="press bg-coral text-white font-semibold px-4 py-2.5 text-xs rounded-full transition-colors hover:bg-coral/90 inline-flex items-center justify-center gap-2 w-full">
+                            <span class="material-symbols-outlined text-[16px]">upload_file</span>
+                            {{ $isPending ? 'Upload Bukti Bayar' : 'Upload Ulang Bukti' }}
+                        </a>
+                    </div>
+                    @endif
+                </div>
             @endforeach
         </div>
     @endif

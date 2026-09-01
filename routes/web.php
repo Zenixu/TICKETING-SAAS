@@ -9,6 +9,7 @@ use App\Http\Controllers\EventCatalogController;
 use App\Http\Controllers\WebEventController;
 use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\CheckinController;
+use App\Http\Controllers\PaymentController;
 
 // 1. PUBLIC ROUTES (Landing & Katalog Event untuk User Biasa)
 Route::get('/', [EventCatalogController::class, 'index'])->name('welcome');
@@ -46,6 +47,11 @@ Route::middleware('auth')->group(function () {
             Route::get('scan', [CheckinController::class, 'scanPage'])->name('scan');
             Route::post('scan', [CheckinController::class, 'processScan'])->name('scan.process');
             Route::post('attendees/{attendee}/checkin', [CheckinController::class, 'manualCheckIn'])->name('attendees.checkin');
+
+            // Payment Verification (Plan C)
+            Route::get('payments', [PaymentController::class, 'verifications'])->name('payments');
+            Route::post('payments/{attendee}/verify', [PaymentController::class, 'verify'])->name('payments.verify');
+            Route::post('payments/{attendee}/reject', [PaymentController::class, 'reject'])->name('payments.reject');
         });
     });
 
@@ -53,6 +59,12 @@ Route::middleware('auth')->group(function () {
     Route::post('events/{event}/register', [EventRegistrationController::class, 'store'])->name('events.register');
     Route::get('events/{event}/success/{attendee}', [EventRegistrationController::class, 'success'])->name('events.success');
     Route::get('my-tickets', [EventRegistrationController::class, 'myTickets'])->name('my-tickets');
+
+    // Payment: submit bukti bayar (attendee)
+    Route::prefix('payment')->name('payment.')->group(function () {
+        Route::get('attendees/{attendee}/submit', [PaymentController::class, 'submitForm'])->name('submit-form');
+        Route::post('attendees/{attendee}/submit', [PaymentController::class, 'submitProof'])->name('submit');
+    });
 
     // ROUTE KHUSUS ADMIN CONSOLE (Hanya Admin yang bisa akses)
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {

@@ -290,7 +290,7 @@
                                             Rp {{ number_format($event->price, 0, ',', '.') }}
                                         </td>
                                         <td class="p-4">
-                                            @php $counts = $attendeeCounts[$event->id] ?? ['total' => 0, 'registered' => 0, 'checked_in' => 0, 'pending_payment' => 0]; @endphp
+                                            @php $counts = $attendeeCounts[$event->id] ?? ['total' => 0, 'registered' => 0, 'checked_in' => 0, 'pending_payment' => 0, 'pending_verification' => 0]; @endphp
                                             <div class="flex flex-col gap-1 text-[11px] font-mono">
                                                 <span class="text-text-primary font-semibold num">
                                                     {{ $counts['total'] }} <span class="text-text-dim font-normal">/ {{ $event->quota }}</span>
@@ -298,7 +298,7 @@
                                                 <span class="text-text-dim text-[10px]">
                                                     <span class="text-mint">{{ $counts['checked_in'] }}</span> ✓ ·
                                                     <span>{{ $counts['registered'] }}</span> reg ·
-                                                    <span class="text-coral">{{ $counts['pending_payment'] }}</span> pending
+                                                    <span class="text-coral">{{ $counts['pending_verification'] + $counts['pending_payment'] }}</span> pending
                                                 </span>
                                             </div>
                                         </td>
@@ -312,6 +312,17 @@
                                                     <span class="material-symbols-outlined text-[13px]">group</span>
                                                     Peserta
                                                 </a>
+                                                @if($counts['pending_verification'] > 0)
+                                                <a href="{{ route('organizer.events.payments', $event->id) }}" class="press glass-pill text-coral hover:bg-coral hover:text-white border-coral/30 px-2.5 py-1.5 text-[11px] font-semibold rounded-full transition-colors flex items-center gap-1 animate-pulse">
+                                                    <span class="material-symbols-outlined text-[13px]">receipt_long</span>
+                                                    Verifikasi ({{ $counts['pending_verification'] }})
+                                                </a>
+                                                @else
+                                                <a href="{{ route('organizer.events.payments', $event->id) }}" class="press glass-pill text-text-muted hover:text-text-primary border-white/10 px-2.5 py-1.5 text-[11px] font-semibold rounded-full transition-colors flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-[13px]">receipt_long</span>
+                                                    Bayar
+                                                </a>
+                                                @endif
                                                 <a href="{{ route('organizer.events.scan', $event->id) }}" class="press glass-pill text-coral hover:bg-coral hover:text-white border-coral/30 px-2.5 py-1.5 text-[11px] font-semibold rounded-full transition-colors flex items-center gap-1">
                                                     <span class="material-symbols-outlined text-[13px]">qr_code_scanner</span>
                                                     Scan

@@ -9,6 +9,7 @@
         'registered' => 'Teregistrasi',
         'checked_in' => 'Sudah Check-in',
         'pending_payment' => 'Menunggu Bayar',
+        'pending_verification' => 'Verifikasi Bukti',
         'cancelled' => 'Dibatalkan',
     ];
 @endphp
